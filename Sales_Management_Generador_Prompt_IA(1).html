@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sales Management · Contrata al mejor vendedor</title>
+<style>
+:root{
+  --bg:#f4f7fb;--card:#ffffff;--text:#172033;--muted:#667085;--line:#d9dfeb;
+  --navy:#0f172a;--blue:#275efe;--blue2:#4f7cff;--purple:#7c3aed;--pink:#db2777;
+  --orange:#f97316;--green:#0f9d6e;--yellow:#f3b61f;--bad:#b42318;
+  --shadow:0 14px 40px rgba(15,23,42,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);visibility:visible}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:50;background:rgba(15,23,42,.97);backdrop-filter:blur(12px);color:#fff;border-bottom:1px solid #ffffff15}
+.head{max-width:1180px;margin:auto;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand b{display:block;font-size:16px}
+.brand small{color:#cbd5e1}
+.progressBox{width:290px}
+.progressBox small{display:flex;justify-content:space-between;margin-bottom:6px;color:#dbe4ee}
+.track{height:8px;border-radius:999px;background:#334155;overflow:hidden}
+.bar{height:100%;width:12.5%;background:linear-gradient(90deg,#60a5fa,#a78bfa);transition:.3s}
+main{max-width:1180px;margin:22px auto;padding:0 16px 60px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#101828 0%,#1e3a8a 55%,#6d28d9 100%);color:#fff;border-radius:26px;padding:32px 34px;margin-bottom:18px;box-shadow:var(--shadow)}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);opacity:.18}
+.hero:before{width:260px;height:260px;background:#f97316;right:-60px;top:-100px}
+.hero:after{width:180px;height:180px;background:#22c55e;right:120px;bottom:-100px}
+.hero .badge{display:inline-flex;gap:7px;align-items:center;background:#ffffff18;border:1px solid #ffffff2c;padding:7px 11px;border-radius:999px;font-size:12px;margin-right:6px}
+.hero h1{font-size:clamp(30px,5vw,54px);line-height:1.02;margin:14px 0 12px;max-width:780px}
+.hero p{max-width:850px;color:#e6ecf5;font-size:17px;line-height:1.55;margin:0}
+.hero .mini{margin-top:16px;color:#cbd5e1;font-size:13px}
+.layout{display:grid;grid-template-columns:235px 1fr;gap:16px;align-items:start}
+nav{position:sticky;top:82px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:9px;box-shadow:0 8px 30px rgba(15,23,42,.05)}
+nav button{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:11px;color:#475467;margin:2px 0;transition:.18s}
+nav button:hover{background:#f8faff}
+nav button.active{background:linear-gradient(90deg,#eef4ff,#f5f0ff);color:#1849a9;font-weight:800}
+.step{display:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 8px 28px rgba(15,23,42,.05);animation:fade .22s ease}
+.step.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.stepTop{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:12px}
+.stepTop h2{margin:0;font-size:28px;line-height:1.15}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:#1849a9;text-transform:uppercase;margin-bottom:7px}
+.lead{color:var(--muted);line-height:1.55;margin:6px 0 18px}
+.chip{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#1849a9;font-size:12px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.card{background:#fbfcfe;border:1px solid var(--line);border-radius:15px;padding:16px}
+.card h3{margin:0 0 8px}
+label{display:block;font-weight:800;margin:10px 0 6px}
+input,select,textarea{width:100%;border:1px solid #cfd6e4;border-radius:10px;padding:11px 12px;background:#fff;color:var(--text);outline:none;transition:.15s}
+input:focus,select:focus,textarea:focus{border-color:#7aa2ff;box-shadow:0 0 0 3px #dbe7ff}
+textarea{min-height:105px;resize:vertical}
+.small{font-size:12px;color:var(--muted);line-height:1.4}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:22px}
+.primary,.secondary,.success,.danger,.ghost{border:0;border-radius:11px;padding:11px 16px;font-weight:800}
+.primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff}
+.secondary{background:#eef2f7;color:#26334d}
+.success{background:linear-gradient(135deg,#0f9d6e,#16a34a);color:#fff}
+.danger{background:#fef3f2;color:#b42318;border:1px solid #fecdca}
+.ghost{background:#fff;color:#344054;border:1px solid var(--line)}
+.callout{margin:12px 0;padding:13px 15px;border-left:4px solid var(--blue);background:#eff4ff;border-radius:10px;color:#344054}
+.optionGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.optionCard{border:2px solid var(--line);border-radius:15px;background:#fff;padding:16px;text-align:left;min-height:112px;transition:.18s;color:var(--text)}
+.optionCard:hover{transform:translateY(-2px);border-color:#a8bfff}
+.optionCard.selected{border-color:var(--blue);background:linear-gradient(145deg,#eef4ff,#faf7ff);box-shadow:0 0 0 3px #dce7ff inset}
+.optionCard b{display:block;font-size:17px;margin-bottom:6px}
+.optionCard span{font-size:12px;color:var(--muted);line-height:1.35}
+.preview{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,.05)}
+.previewHead{padding:14px 16px;background:linear-gradient(90deg,#111827,#273b5c);color:#fff}
+.previewBody{padding:18px}
+.previewTitle{font-size:23px;font-weight:900;margin-bottom:7px}
+.req{display:flex;gap:8px;align-items:flex-start;margin:7px 0;color:#344054}
+.req:before{content:"✓";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#ecfdf3;color:#067647;font-weight:900;font-size:12px;flex:0 0 auto}
+.upload{display:flex;align-items:center;gap:16px;background:#fbfcfe;border:1px dashed #98a2b3;border-radius:15px;padding:14px}
+.avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;background:linear-gradient(135deg,#e4e7ec,#f9fafb);border:4px solid #fff;box-shadow:0 0 0 2px #d0d5dd}
+.avatar.big{width:118px;height:118px}.textAvatar{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font-size:30px;font-weight:900;background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;border:4px solid #fff;box-shadow:0 0 0 2px #d0d5dd}.textAvatar.b{background:linear-gradient(135deg,#ffedd5,#fed7aa);color:#c2410c}
+.candidateCard{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,.06)}
+.candidateTop{padding:18px;background:linear-gradient(135deg,#eff4ff,#f9f5ff);display:flex;align-items:center;gap:14px}
+.candidateTop.b{background:linear-gradient(135deg,#fff4ed,#fdf2fa)}
+.candidateBody{padding:17px}
+.candidateName{font-size:23px;font-weight:900}
+.meta{font-size:13px;color:var(--muted)}
+.story{margin-top:12px;background:#f8fafc;border-left:4px solid #8b5cf6;padding:12px;border-radius:9px;line-height:1.5;color:#475467;white-space:pre-wrap}
+.extra{display:inline-block;margin-top:10px;background:#fff7d6;border:1px solid #f4d47b;color:#7a5a00;padding:6px 9px;border-radius:999px;font-size:12px;font-weight:900}
+.char{float:right;font-size:12px;color:var(--muted)}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.skill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:700;color:#475467}
+.skill.selected{background:#eef4ff;border-color:#7aa2ff;color:#1849a9}
+.vsWrap{display:grid;grid-template-columns:1fr 90px 1fr;gap:12px;align-items:center}
+.vs{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;margin:auto;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:23px;font-weight:900;box-shadow:0 12px 26px rgba(249,115,22,.25)}
+.ratingBox{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcfe}
+.ratingRow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border-bottom:1px solid #edf0f5;padding:10px 0}
+.ratingRow:last-child{border-bottom:0}
+.stars{display:flex;gap:3px}
+.star{border:0;background:transparent;font-size:26px;line-height:1;color:#d0d5dd;padding:0 1px}
+.star.on{color:#f3b61f}
+.score{font-size:34px;font-weight:900}
+.scoreBar{height:10px;background:#e9edf4;border-radius:999px;overflow:hidden;margin-top:9px}
+.scoreFill{height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#8b5cf6);transition:.25s}
+.choice{border:2px solid var(--line);border-radius:18px;padding:16px;text-align:center;background:#fff;transition:.18s}
+.choice.selected{border-color:#16a34a;background:#ecfdf3;box-shadow:0 0 0 3px #dcfce7 inset}
+.choice button{margin-top:10px;width:100%}
+.finalWrap{background:linear-gradient(135deg,#0b1220,#111827);border-radius:20px;padding:14px}
+.slide{aspect-ratio:16/9;background:#f7f9fc;border-radius:16px;overflow:hidden;position:relative;color:#172033;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+.auditTop{height:108px;background:linear-gradient(115deg,#0f172a,#1d4ed8 58%,#6d28d9);color:#fff;padding:20px 24px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;position:relative;overflow:hidden}
+.auditTop:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:180px;top:-115px;background:#ffffff18}
+.auditEyebrow{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#bfdbfe}
+.auditTitle{font-size:27px;font-weight:950;line-height:1.05;margin:4px 0}
+.auditMeta{font-size:11px;color:#dbeafe;display:flex;gap:8px;flex-wrap:wrap}
+.auditMeta span{background:#ffffff14;border:1px solid #ffffff25;padding:4px 8px;border-radius:999px}
+.auditSeal{background:#fff;color:#172033;border-radius:14px;padding:10px 13px;min-width:190px;box-shadow:0 10px 25px #0002}
+.auditSeal b{display:block;color:#1d4ed8;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.auditSeal strong{display:block;font-size:17px;margin-top:3px}
+.auditBody{padding:14px 16px 16px}
+.auditRow{display:grid;grid-template-columns:1.08fr 1fr 1fr;gap:11px}
+.auditBox{background:#fff;border:1px solid #e1e7f0;border-radius:13px;padding:12px;box-shadow:0 5px 14px rgba(15,23,42,.04);min-width:0}
+.auditBox h4{margin:0 0 7px;font-size:10px;color:#667085;letter-spacing:.1em;text-transform:uppercase}
+.auditJob{font-size:18px;font-weight:950;line-height:1.05;margin-bottom:6px}
+.auditText{font-size:10.5px;color:#5b6575;line-height:1.35}
+.reqMini{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.reqMini span{font-size:9.5px;background:#f4f7fb;border-radius:7px;padding:5px 6px;color:#344054;border:1px solid #e6ebf2}
+.candHeader{display:grid;grid-template-columns:56px 1fr 58px;gap:8px;align-items:center}
+.candHeader img{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#e4e7ec;border:3px solid #fff;box-shadow:0 0 0 1px #d0d5dd}
+.candName{font-size:16px;font-weight:950;line-height:1.05}
+.candMeta{font-size:9.5px;color:#667085;margin-top:3px}
+.scoreCircle{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#275efe var(--pct),#e8edf5 0);position:relative}
+.scoreCircle:after{content:"";position:absolute;inset:6px;border-radius:50%;background:#fff}
+.scoreCircle b{position:relative;z-index:1;font-size:13px}
+.candStory{font-size:9.7px;color:#667085;line-height:1.28;margin:8px 0 7px;height:38px;overflow:hidden}
+.traits{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.trait{border-radius:8px;padding:6px;background:#f8fafc;font-size:9.2px;line-height:1.25}
+.trait.good{border-left:3px solid #16a34a}.trait.risk{border-left:3px solid #f97316}
+.criteria{margin-top:8px;display:grid;gap:4px}
+.crit{display:grid;grid-template-columns:70px 1fr 16px;gap:5px;align-items:center;font-size:8.8px;color:#475467}
+.miniTrack{height:5px;border-radius:999px;background:#e7ebf2;overflow:hidden}
+.miniFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
+.auditMid{display:grid;grid-template-columns:1.05fr .95fr;gap:11px;margin-top:11px}
+.challengeCard{display:grid;grid-template-columns:1fr auto;gap:10px}
+.challengeName{font-size:16px;font-weight:950}
+.skillPills{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.skillPills span{font-size:8.8px;font-weight:800;padding:4px 6px;background:#eef4ff;color:#1849a9;border-radius:999px}
+.findings{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}
+.finding{background:#f8fafc;border-radius:8px;padding:6px 7px;font-size:9.2px;line-height:1.25}
+.finding b{display:block;font-size:8.6px;color:#667085;text-transform:uppercase;margin-bottom:2px}
+.auditDecision{margin-top:11px;display:grid;grid-template-columns:1.15fr 1.35fr;gap:11px}
+.hired{background:linear-gradient(135deg,#0f172a,#1d4ed8 58%,#7c3aed);color:#fff;border-radius:13px;padding:12px;display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:center;position:relative;overflow:hidden}
+.hired:after{content:"✓";position:absolute;right:-5px;bottom:-26px;font-size:96px;color:#ffffff0d;font-weight:900}
+.hired img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid #fff}
+.hired .name{font-size:19px;font-weight:950;line-height:1.05}
+.hired .ey{font-size:9px;color:#bfdbfe;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
+.hired .evidence{font-size:9.5px;color:#dbeafe;margin-top:4px}
+.reasonBox{background:#fff;border:1px solid #e1e7f0;border-radius:13px;padding:11px;display:grid;grid-template-columns:1fr auto;gap:10px}
+.reasonBox h4{margin:0 0 5px;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.08em}
+.reasonBox p{margin:0;font-size:10px;color:#475467;line-height:1.35}
+.auditBadge{align-self:start;background:#fff7d6;border:1px solid #f4d47b;color:#7a5a00;padding:5px 7px;border-radius:999px;font-size:8.7px;font-weight:900;white-space:nowrap}
+.auditFooter{margin-top:9px;display:flex;justify-content:space-between;gap:10px;align-items:center;color:#7b8493;font-size:8.5px}
+.auditFooter b{color:#344054}
+.downloads{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.downloads{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:12px 14px;border-radius:11px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:80}
+.toast.show{opacity:1;transform:none}
+.error{display:none;color:var(--bad);font-weight:800;font-size:13px;margin-top:8px}
+.error.show{display:block}
+
+.storySlide{background:#f7f9fc}
+.storyHero{min-height:118px;background:linear-gradient(115deg,#0f172a,#1d4ed8 58%,#6d28d9);color:#fff;padding:18px 22px;display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:center;position:relative;overflow:hidden}
+.storyHero:after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:120px;top:-145px;background:#ffffff12}
+.outcomeHero{background:linear-gradient(115deg,#111827,#312e81 55%,#7c3aed)}
+.storyBig{font-size:29px;font-weight:950;line-height:1.04;margin:4px 0 7px}
+.storyLead{font-size:11px;line-height:1.4;color:#dbeafe;max-width:700px}
+.storyCompany{background:#fff;color:#172033;border-radius:14px;padding:11px 13px;box-shadow:0 12px 30px #0003;position:relative;z-index:1}
+.storyCompany strong{display:block;font-size:18px;margin:2px 0 4px}
+.smallCap{font-size:8.8px;font-weight:900;letter-spacing:.11em;color:#667085;text-transform:uppercase}
+.storyBody{padding:12px 15px 10px}
+.storyChapter{margin-bottom:10px}
+.chapterNo{font-size:8.5px;font-weight:900;color:#275efe;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.storyChapter h3,.storyChallenge h3{margin:0 0 7px;font-size:16px}
+.vacancyStoryGrid{display:grid;grid-template-columns:1.45fr .75fr;gap:10px}
+.storyJob{font-size:19px;font-weight:950;margin-bottom:4px}
+.missionCard{background:linear-gradient(145deg,#eff4ff,#f7f4ff);border:1px solid #dbe7ff;border-radius:12px;padding:11px}
+.missionCard strong{display:block;font-size:15px;margin:3px 0}
+.storyCandidates{display:grid;grid-template-columns:1fr 48px 1fr;gap:9px;align-items:center}
+.storyPerson{background:#fff;border:1px solid #e1e7f0;border-radius:13px;padding:10px;box-shadow:0 5px 14px rgba(15,23,42,.04)}
+.storyPersonHead{display:flex;gap:9px;align-items:center}
+.storyPersonHead img{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#e4e7ec;border:3px solid #fff;box-shadow:0 0 0 1px #d0d5dd}
+.storyName{font-size:16px;font-weight:950;line-height:1.05}
+.lifeQuote{font-size:9.4px;color:#5f6b7a;line-height:1.3;margin:7px 0;padding:7px 8px;background:#f8fafc;border-radius:8px;min-height:44px}
+.twoTraits{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.storyVs,.resultVs{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;margin:auto;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:13px;font-weight:950}
+.storyChallenge{display:grid;grid-template-columns:1.35fr 1fr;gap:10px;background:#fff;border:1px solid #e1e7f0;border-radius:13px;padding:10px}
+.storyFooter{display:flex;justify-content:space-between;gap:10px;align-items:center;color:#7b8493;font-size:8px;margin-top:8px}
+.resultDuel{display:grid;grid-template-columns:1fr 48px 1fr;gap:10px;align-items:center}
+.resultPerson{background:#fff;border:1px solid #e1e7f0;border-radius:13px;padding:10px}
+.resultTop{display:flex;gap:9px;align-items:center;margin-bottom:6px}
+.resultTop img{width:50px;height:50px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 0 0 1px #d0d5dd}
+.bigResult{font-size:18px;font-weight:950;color:#1d4ed8;margin-top:3px}
+.findingsStory{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.findingStory{display:flex;gap:7px;align-items:flex-start;background:#fff;border:1px solid #e1e7f0;border-radius:10px;padding:8px}
+.findingStory.wide{grid-column:1/-1}
+.findingStory span{font-size:16px}
+.findingStory b{font-size:8.8px;color:#667085;text-transform:uppercase;letter-spacing:.06em}
+.findingStory p{margin:2px 0 0;font-size:9.6px;line-height:1.25;color:#344054}
+.storyEnding{background:linear-gradient(135deg,#0f172a,#1d4ed8 58%,#6d28d9);border-radius:14px;padding:10px;color:#fff}
+.endingLabel{font-size:8.5px;font-weight:900;letter-spacing:.12em;color:#bfdbfe;margin-bottom:6px}
+.endingGrid{display:grid;grid-template-columns:1fr 1.45fr;gap:10px}
+.winnerCard{display:flex;gap:9px;align-items:center;background:#ffffff10;border:1px solid #ffffff20;border-radius:11px;padding:8px}
+.winnerCard img{width:54px;height:54px;border-radius:50%;object-fit:cover;border:3px solid #fff}
+.winnerCard .ey{font-size:8px;color:#bfdbfe;font-weight:900;letter-spacing:.07em}
+.winnerName{font-size:18px;font-weight:950}
+.winnerEvidence{font-size:9px;color:#dbeafe;margin-top:3px}
+.decisionStory{background:#fff;color:#172033;border-radius:11px;padding:8px 10px}
+.decisionStory p{margin:3px 0 5px;font-size:9.8px;line-height:1.25}
+.storyConclusion{font-size:8.8px;color:#475467;background:#f4f7fb;border-left:3px solid #275efe;border-radius:7px;padding:6px 7px}
+
+
+/* ===== EXPORTACIÓN FINAL EN DOS PÁGINAS 16:9 ===== */
+.storySlide{
+  aspect-ratio:16/9;
+  width:100%;
+  overflow:hidden;
+  background:#f7f9fc;
+}
+.storyHero{
+  min-height:96px;
+  padding:14px 18px;
+  grid-template-columns:1fr 205px;
+}
+.storyBig{font-size:25px;margin:3px 0 5px}
+.storyLead{font-size:10px;line-height:1.3}
+.storyCompany{padding:8px 10px}
+.storyCompany strong{font-size:16px}
+.storyBody{padding:9px 12px 8px}
+.storyChapter{margin-bottom:7px}
+.storyChapter h3,.storyChallenge h3{font-size:14px;margin:0 0 5px}
+.chapterNo{font-size:7.8px;margin-bottom:2px}
+.storyJob{font-size:17px}
+.auditText{font-size:9px;line-height:1.25}
+.reqMini{gap:4px;margin-top:5px}
+.reqMini span{font-size:8.3px;padding:4px 5px}
+.missionCard{padding:8px}
+.storyCandidates{gap:7px}
+.storyPerson{padding:8px}
+.storyPersonHead img{width:46px;height:46px}
+.storyName{font-size:14px}
+.candMeta{font-size:8.5px}
+.lifeQuote{font-size:8.5px;line-height:1.22;margin:5px 0;padding:5px 6px;min-height:34px;max-height:42px;overflow:hidden}
+.twoTraits{gap:4px}
+.trait{padding:4px 5px;font-size:8px}
+.storyVs,.resultVs{width:36px;height:36px;font-size:11px}
+.storyChallenge{padding:7px 8px;gap:8px}
+.challengeName{font-size:14px}
+.skillPills{gap:4px;margin-top:5px}
+.skillPills span{font-size:7.8px;padding:3px 5px}
+.storyFooter{font-size:7.3px;margin-top:5px}
+.resultPerson{padding:8px}
+.resultTop{margin-bottom:4px}
+.resultTop img{width:44px;height:44px}
+.bigResult{font-size:16px}
+.criteria{margin-top:4px;gap:3px}
+.crit{grid-template-columns:64px 1fr 14px;gap:4px;font-size:7.7px}
+.miniTrack{height:4px}
+.findingsStory{gap:5px}
+.findingStory{padding:5px 6px}
+.findingStory span{font-size:13px}
+.findingStory b{font-size:7.6px}
+.findingStory p{font-size:8.3px;line-height:1.18}
+.storyEnding{padding:7px 8px}
+.endingLabel{font-size:7.6px;margin-bottom:4px}
+.endingGrid{gap:7px}
+.winnerCard{padding:6px}
+.winnerCard img{width:46px;height:46px}
+.winnerCard .ey{font-size:7px}
+.winnerName{font-size:16px}
+.winnerEvidence{font-size:8px}
+.decisionStory{padding:6px 8px}
+.decisionStory p{font-size:8.5px;line-height:1.18;margin:2px 0 4px}
+.storyConclusion{font-size:7.8px;padding:4px 5px}
+.smallCap{font-size:7.7px}
+.auditMeta span{font-size:8px;padding:3px 6px}
+.downloads{justify-content:center}
+@media(max-width:900px){
+  .storySlide{aspect-ratio:auto;overflow:visible}
+}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  nav{position:static;display:flex;overflow:auto}
+  nav button{min-width:150px}
+  .progressBox{display:none}
+  .grid,.grid3,.optionGrid{grid-template-columns:1fr}
+  .vsWrap{grid-template-columns:1fr}
+  .vs{margin:6px auto}
+  .slide{aspect-ratio:auto}
+  .auditRow,.auditMid,.auditDecision{grid-template-columns:1fr}
+  .auditTop{height:auto;grid-template-columns:1fr}
+  .auditSeal{max-width:260px}
+  .storyHero,.vacancyStoryGrid,.storyChallenge,.endingGrid{grid-template-columns:1fr}
+  .storyCandidates,.resultDuel{grid-template-columns:1fr}
+  .findingsStory{grid-template-columns:1fr}
+  .findingStory.wide{grid-column:auto}
+}
+
+  .finalWrap{background:#fff!important;padding:0!important}
+  #finalStory1,#finalStory2{width:100%!important;aspect-ratio:16/9!important;page-break-after:always!important;break-after:page!important}
+  #finalStory2{page-break-after:auto!important;break-after:auto!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="head">
+    <div class="brand"><b>Sales Management · Simulador de Selección</b><small>Contrata al mejor vendedor · Profesor Silvio Rodríguez</small></div>
+    <div class="progressBox"><small><span id="progressText">Misión 1 de 8</span><span id="progressPct">13%</span></small><div class="track"><div id="bar" class="bar"></div></div></div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="badge">🎯 Actividad práctica</span>
+    <span class="badge">👥 Trabajo en equipo</span>
+    <span class="badge">🧩 Plantilla uniforme</span>
+    <h1>¿A quién contratarías?</h1>
+    <p>Hoy ustedes son los altos ejecutivos de una empresa. Crearán una vacante, conocerán a dos candidatos, diseñarán una prueba de ventas y tomarán la decisión final.</p>
+    <div class="mini">Todos los equipos terminarán con la misma plantilla visual lista para presentar.</div>
+  </section>
+
+  <div class="layout">
+    <nav id="nav"></nav>
+    <div>
+
+      <section class="step active">
+        <div class="stepTop"><div><div class="kicker">Misión 1</div><h2>🏢 Formen su equipo</h2><p class="lead">Antes de comenzar, identifiquen al equipo que tomará las decisiones.</p></div><span class="chip">Inicio</span></div>
+        <div class="grid">
+          <div><label>Nombre del equipo</label><input id="team" placeholder="Ej. Los Cazatalentos"></div>
+          <div><label>Grupo</label><input id="group" placeholder="Ej. Grupo 2"></div>
+        </div>
+        <label>Integrantes</label>
+        <textarea id="members" placeholder="Escriban los nombres de los integrantes del equipo."></textarea>
+        <div class="callout"><b>Su rol:</b> actuarán como el comité ejecutivo que decidirá a quién contratar.</div>
+        <div class="actions"><span></span><button class="primary next">Comenzar el reto →</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop"><div><div class="kicker">Misión 2</div><h2>🏢 ¿Qué empresa dirigen?</h2><p class="lead">Elijan el tipo de negocio y el vendedor que necesitan.</p></div><span class="chip">Empresa</span></div>
+        <div id="businessGrid" class="optionGrid">
+          <button class="optionCard" data-value="Hotel"><b>🏨 Hotel</b><span>Reservas, eventos, experiencias y clientes.</span></button>
+          <button class="optionCard" data-value="Tienda de celulares"><b>📱 Tienda de celulares</b><span>Venta consultiva, accesorios y tecnología.</span></button>
+          <button class="optionCard" data-value="Distribuidora"><b>🥤 Distribuidora</b><span>Ruta, cobertura, pedidos y cartera.</span></button>
+          <button class="optionCard" data-value="Agencia de viajes"><b>✈️ Agencia de viajes</b><span>Paquetes, asesoría y cierre de reservas.</span></button>
+          <button class="optionCard" data-value="Restaurante"><b>🍔 Restaurante</b><span>Ventas, eventos, delivery y atención.</span></button>
+          <button class="optionCard" data-value="Tecnología"><b>💻 Tecnología</b><span>Software, soluciones y venta B2B.</span></button>
+          <button class="optionCard" data-value="Agencia de vehículos"><b>🚗 Agencia de vehículos</b><span>Prospección, prueba, financiamiento y cierre.</span></button>
+          <button class="optionCard" data-value="Tienda"><b>🛍️ Tienda</b><span>Atención, recomendación y venta directa.</span></button>
+          <button class="optionCard" data-value="Otro"><b>➕ Otro</b><span>Usen el negocio que prefieran.</span></button>
+        </div>
+        <input type="hidden" id="businessType">
+        <div class="grid">
+          <div><label>Nombre de la empresa</label><input id="company" placeholder="Ej. Hotel Costa Azul"></div>
+          <div><label>Tipo de vendedor que necesitan</label>
+            <select id="sellerType">
+              <option value="">Seleccionar…</option>
+              <option>Vendedor de tienda</option><option>Vendedor de ruta</option><option>Vendedor telefónico</option>
+              <option>Vendedor digital</option><option>Ejecutivo comercial</option><option>Vendedor corporativo</option><option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="callout"><b>BUSCAMOS:</b> <span id="sellerEcho">—</span></div>
+        <div class="error" id="businessError">Seleccionen un negocio, escriban el nombre de la empresa y el tipo de vendedor.</div>
+        <div class="actions"><button class="secondary prev">← Atrás</button><button class="primary next">Crear la vacante →</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop"><div><div class="kicker">Misión 3</div><h2>📢 Publiquen su vacante</h2><p class="lead">Creen un anuncio corto. La vista previa se actualizará automáticamente.</p></div><span class="chip">Vacante</span></div>
+        <div class="grid">
+          <div>
+            <label>Nombre del puesto</label><input id="jobTitle" placeholder="Ej. Ejecutivo de Ventas">
+            <label>Descripción breve</label><textarea id="jobDesc" placeholder="¿Qué hará esta persona?"></textarea>
+            <label>Requisitos básicos</label>
+            <div class="grid">
+              <input id="r1" placeholder="Ej. Buena comunicación"><input id="r2" placeholder="Ej. Experiencia en ventas">
+              <input id="r3" placeholder="Ej. Manejo de clientes"><input id="r4" placeholder="Ej. Disponibilidad">
+            </div>
+          </div>
+          <div class="preview">
+            <div class="previewHead"><b>📢 VACANTE</b><div class="small" style="color:#dbe4ee">Nueva oportunidad</div></div>
+            <div class="previewBody">
+              <div class="previewTitle" id="jobPrevTitle">Ejecutivo de Ventas</div>
+              <p id="jobPrevDesc" style="color:#667085;line-height:1.5">Buscamos una persona para atender clientes y generar nuevas oportunidades.</p>
+              <div id="reqPreview"></div>
+            </div>
+          </div>
+        </div>
+        <div class="error" id="vacancyError">Completen el nombre del puesto y al menos dos requisitos.</div>
+        <div class="actions"><button class="secondary prev">← Atrás</button><button class="primary next">Conocer candidato A →</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop"><div><div class="kicker">Misión 4</div><h2>👤 Conozcan al candidato A</h2><p class="lead">Construyan un perfil breve, creíble y creativo.</p></div><span class="chip">Candidato A</span></div>
+        <div class="grid">
+          <div>
+            </div>
+            <div class="grid"><div><label>Nombre</label><input id="aName"></div><div><label>Edad</label><input id="aAge" type="number" min="18" max="80"></div></div>
+            <label>Experiencia</label><input id="aExp" placeholder="Ej. 2 años en ventas de tecnología">
+            <div class="grid"><div><label>Fortaleza</label><input id="aStrength"></div><div><label>Debilidad</label><input id="aWeak"></div></div>
+            <label>📖 Historia de vida <span class="char" id="aCount">0/500</span></label>
+            <textarea id="aStory" maxlength="500" placeholder="¿Quién es? ¿Qué ha vivido? ¿Qué busca lograr?"></textarea>
+            <span class="extra">⭐ Punto extra: historia más creativa</span>
+          </div>
+          <div class="candidateCard">
+            <div class="candidateTop"><div class="textAvatar">A</div><div><div class="candidateName" id="aCardName">Candidato A</div><div class="meta" id="aCardMeta">Edad · Experiencia</div></div></div>
+            <div class="candidateBody"><b>Fortaleza:</b> <span id="aCardStrength">—</span><br><b>Debilidad:</b> <span id="aCardWeak">—</span><div class="story" id="aCardStory">Aquí aparecerá su historia de vida.</div></div>
+          </div>
+        </div>
+        <div class="error" id="aError">Agreguen nombre, experiencia e historia de vida del candidato A.</div>
+        <div class="actions"><button class="secondary prev">← Atrás</button><button class="primary next">Conocer candidato B →</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop"><div><div class="kicker">Misión 5</div><h2>👤 Conozcan al candidato B</h2><p class="lead">El segundo perfil debe ser diferente para que exista una decisión real.</p></div><span class="chip">Candidato B</span></div>
+        <div class="grid">
+          <div>
+            </div>
+            <div class="grid"><div><label>Nombre</label><input id="bName"></div><div><label>Edad</label><input id="bAge" type="number" min="18" max="80"></div></div>
+            <label>Experiencia</label><input id="bExp" placeholder="Ej. 1 año en televentas">
+            <div class="grid"><div><label>Fortaleza</label><input id="bStrength"></div><div><label>Debilidad</label><input id="bWeak"></div></div>
+            <label>📖 Historia de vida <span class="char" id="bCount">0/500</span></label>
+            <textarea id="bStory" maxlength="500" placeholder="¿Quién es? ¿Qué ha vivido? ¿Qué busca lograr?"></textarea>
+            <span class="extra">⭐ Punto extra: historia más creativa</span>
+          </div>
+          <div class="candidateCard">
+            <div class="candidateTop b"><div class="textAvatar b">B</div><div><div class="candidateName" id="bCardName">Candidato B</div><div class="meta" id="bCardMeta">Edad · Experiencia</div></div></div>
+            <div class="candidateBody"><b>Fortaleza:</b> <span id="bCardStrength">—</span><br><b>Debilidad:</b> <span id="bCardWeak">—</span><div class="story" id="bCardStory">Aquí aparecerá su historia de vida.</div></div>
+          </div>
+        </div>
+        <div class="error" id="bError">Agreguen nombre, experiencia e historia de vida del candidato B.</div>
+        <div class="actions"><button class="secondary prev">← Atrás</button><button class="primary next">Diseñar la prueba →</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop"><div><div class="kicker">Misión 6</div><h2>🎯 Diseñen la prueba de selección</h2><p class="lead">Como altos ejecutivos, creen una misma prueba para ambos candidatos.</p></div><span class="chip">El reto</span></div>
+        <div class="grid">
+          <div>
+            <label>Nombre del reto</label><input id="challengeName" placeholder="Ej. Véndeme este producto">
+            <label>¿Qué tendrán que hacer?</label><textarea id="challengeTask" placeholder="Ej. Tendrán 1 minuto para vender un producto a un cliente que tiene dudas."></textarea>
+            <label>¿Qué quieren comprobar?</label>
+            <div id="skillBox" class="skills">
+              <button type="button" class="skill" data-skill="Comunicación">🗣️ Comunicación</button>
+              <button type="button" class="skill" data-skill="Capacidad de venta">💰 Venta</button>
+              <button type="button" class="skill" data-skill="Seguridad">😎 Seguridad</button>
+              <button type="button" class="skill" data-skill="Manejo de clientes">🤝 Manejo de clientes</button>
+              <button type="button" class="skill" data-skill="Creatividad">🧠 Creatividad</button>
+              <button type="button" class="skill" data-skill="Escucha">👂 Escucha</button>
+              <button type="button" class="skill" data-skill="Manejo de objeciones">💬 Objeciones</button>
+              <button type="button" class="skill" data-skill="Negociación">🤝 Negociación</button>
+            </div>
+          </div>
+          <div class="preview">
+            <div class="previewHead"><b>🎯 RETO DE SELECCIÓN</b></div>
+            <div class="previewBody">
+              <div class="previewTitle" id="challengePrevName">Véndeme este producto</div>
+              <p id="challengePrevTask" style="color:#667085;line-height:1.5">Ambos candidatos deberán realizar la misma prueba.</p>
+              <b>Evaluaremos:</b><div id="challengePrevSkills" class="skills"></div>
+            </div>
+          </div>
+        </div>
+        <div class="error" id="challengeError">Escriban el reto, la actividad y seleccionen al menos dos aspectos a evaluar.</div>
+        <div class="actions"><button class="secondary prev">← Atrás</button><button class="primary next">Ir al enfrentamiento →</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop"><div><div class="kicker">Misión 7</div><h2>🔥 Candidato A vs Candidato B</h2><p class="lead">Evalúen a ambos con la misma escala. Las estrellas representan la evidencia observada en la prueba.</p></div><span class="chip">Enfrentamiento</span></div>
+        <div class="vsWrap">
+          <div class="candidateCard"><div class="candidateTop"><div class="textAvatar">A</div><div><div class="candidateName" id="aFightName">Candidato A</div><div class="meta">Evaluación</div></div></div><div class="candidateBody"><div id="ratingA" class="ratingBox"></div><div class="score"><span id="scoreA">0</span>/20</div><div class="scoreBar"><div id="scoreFillA" class="scoreFill"></div></div></div></div>
+          <div class="vs">VS</div>
+          <div class="candidateCard"><div class="candidateTop b"><div class="textAvatar b">B</div><div><div class="candidateName" id="bFightName">Candidato B</div><div class="meta">Evaluación</div></div></div><div class="candidateBody"><div id="ratingB" class="ratingBox"></div><div class="score"><span id="scoreB">0</span>/20</div><div class="scoreBar"><div id="scoreFillB" class="scoreFill"></div></div></div></div>
+        </div>
+        <label>¿Qué observaron durante la prueba?</label><textarea id="observations" placeholder="Escriban brevemente qué hizo bien o mal cada candidato."></textarea>
+        <div class="callout">El puntaje ayuda a comparar, pero <b>la aplicación no decide por ustedes.</b></div>
+        <div class="actions"><button class="secondary prev">← Atrás</button><button class="primary next">Tomar la decisión final →</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop"><div><div class="kicker">Misión 8</div><h2>⚖️ ¿A quién contratarían?</h2><p class="lead">Solo pueden contratar a una persona. Defiendan la decisión con evidencia.</p></div><span class="chip">Decisión final</span></div>
+        <div class="grid">
+          <div id="choiceA" class="choice"><div class="textAvatar">A</div><h3 id="aChoiceName">Candidato A</h3><div class="small">Puntaje: <b id="aChoiceScore">0/20</b></div><button class="success hireBtn" data-hire="A">Contratar candidato A</button></div>
+          <div id="choiceB" class="choice"><div class="textAvatar b">B</div><h3 id="bChoiceName">Candidato B</h3><div class="small">Puntaje: <b id="bChoiceScore">0/20</b></div><button class="success hireBtn" data-hire="B">Contratar candidato B</button></div>
+        </div>
+        <input type="hidden" id="hired">
+        <label>¿Por qué lo contratarían?</label><textarea id="hireReason" placeholder="Expliquen la razón principal de su decisión."></textarea>
+        <label>¿Qué evidencia fue más importante?</label>
+        <select id="evidence"><option value="">Seleccionar…</option><option>Experiencia</option><option>Resultado de la prueba</option><option>Comunicación</option><option>Capacidad de venta</option><option>Seguridad</option><option>Manejo de clientes</option><option>Historia de vida</option><option>Otra</option></select>
+        <div class="error" id="decisionError">Seleccionen a un candidato y expliquen por qué lo contratarían.</div>
+        <div class="actions"><button class="secondary prev">← Atrás</button><button id="showFinal" class="primary">Generar prompt para presentación ✨</button></div>
+      </section>
+
+      <section class="step">
+        <div class="stepTop">
+          <div>
+            <div class="kicker">Resultado final</div>
+            <h2>✨ Prompt para crear la presentación con IA</h2>
+            <p class="lead">El simulador reúne todas las respuestas del equipo y genera un prompt listo para pegar en una IA de presentaciones.</p>
+          </div>
+          <span class="chip">Presentación 16:9</span>
+        </div>
+
+        <div class="card" style="background:linear-gradient(135deg,#111827,#1d4ed8 58%,#6d28d9);color:#fff;border:0;padding:24px">
+          <div class="kicker" style="color:#bfdbfe">MISIÓN COMPLETADA</div>
+          <h3 style="font-size:30px;margin:5px 0 10px">Ahora conviertan sus decisiones en una presentación visual.</h3>
+          <p style="color:#dbeafe;line-height:1.5;margin:0">Copien el prompt y péguenlo en ChatGPT, Canva, Gamma u otra IA que cree presentaciones. La IA podrá mejorar el diseño, pero no los datos.</p>
+        </div>
+
+        <div class="grid" style="margin-top:14px">
+          <div class="card">
+            <h3 style="margin-top:0">🔒 La IA NO puede</h3>
+            <div class="req">Cambiar ningún dato escrito por el equipo.</div>
+            <div class="req">Corregir nombres, historias, fortalezas, debilidades o resultados.</div>
+            <div class="req">Inventar información que no haya sido respondida.</div>
+            <div class="req">Cambiar quién fue contratado ni la razón de la decisión.</div>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">🎨 La IA SÍ puede</h3>
+            <div class="req">Organizar la información como storytelling.</div>
+            <div class="req">Usar iconos, tarjetas, barras, diagramas y un VS visual.</div>
+            <div class="req">Distribuir la información en varias diapositivas para que se lea bien.</div>
+            <div class="req">Hacer la presentación moderna, colorida y profesional.</div>
+          </div>
+        </div>
+
+        <label style="margin-top:18px">Prompt final</label>
+        <textarea id="finalPrompt" readonly style="min-height:560px;font-family:Consolas,monospace;font-size:13px;line-height:1.5;background:#0f172a;color:#e5edf8;border:0;padding:18px"></textarea>
+
+        <div class="downloads">
+          <button id="copyPromptBtn" class="primary">📋 Copiar prompt</button>
+          <button id="downloadPromptBtn" class="secondary">⬇️ Descargar prompt</button>
+          <button class="ghost prev">✏️ Editar respuestas</button>
+          <button id="resetBtn" class="danger">🆕 Nueva simulación</button>
+        </div>
+
+        <div class="callout"><b>Entrega:</b> utilicen este prompt para generar la presentación final. Todos los equipos tendrán la misma lógica de presentación, pero con sus propias respuestas.</div>
+      </section>
+
+    </div>
+  </div>
+</main>
+<div id="toast" class="toast">Tu avance ha sido guardado.</div>
+
+<script>
+const steps=[...document.querySelectorAll('.step')];
+const nav=document.getElementById('nav');
+const labels=['1. Equipo','2. Empresa','3. Vacante','4. Candidato A','5. Candidato B','6. El reto','7. Enfrentamiento','8. Contratación','9. Resultado'];
+let current=0;
+let selectedSkills=[];
+let ratings={A:[0,0,0,0],B:[0,0,0,0]};
+const ratingLabels=['🗣️ Comunicación','💰 Venta','😎 Seguridad','🤝 Manejo del cliente'];
+
+labels.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;b.addEventListener('click',()=>{if(i<=current||i===8)go(i)});nav.appendChild(b)});
+function go(i){current=Math.max(0,Math.min(i,steps.length-1));steps.forEach((s,x)=>s.classList.toggle('active',x===current));[...nav.children].forEach((b,x)=>b.classList.toggle('active',x===current));const pct=Math.round(((Math.min(current,7)+1)/8)*100);document.getElementById('bar').style.width=pct+'%';document.getElementById('progressPct').textContent=pct+'%';document.getElementById('progressText').textContent=current<8?`Misión ${Math.min(current+1,8)} de 8`:'Resultado final';window.scrollTo({top:0,behavior:'smooth'});syncAll();save()}
+go(0);
+
+document.querySelectorAll('.next').forEach(b=>b.addEventListener('click',()=>{if(validate(current))go(current+1)}));
+document.querySelectorAll('.prev').forEach(b=>b.addEventListener('click',()=>go(current-1)));
+
+document.querySelectorAll('#businessGrid .optionCard').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#businessGrid .optionCard').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');document.getElementById('businessType').value=b.dataset.value;save()}));
+document.getElementById('sellerType').addEventListener('change',e=>{document.getElementById('sellerEcho').textContent=e.target.value||'—'});
+
+['jobTitle','jobDesc','r1','r2','r3','r4'].forEach(id=>document.getElementById(id).addEventListener('input',updateVacancy));
+function updateVacancy(){document.getElementById('jobPrevTitle').textContent=v('jobTitle')||'Ejecutivo de Ventas';document.getElementById('jobPrevDesc').textContent=v('jobDesc')||'Buscamos una persona para atender clientes y generar nuevas oportunidades.';const req=[v('r1'),v('r2'),v('r3'),v('r4')].filter(Boolean);document.getElementById('reqPreview').innerHTML=req.map(x=>`<div class="req">${esc(x)}</div>`).join('');save()}
+
+function bindCandidate(p){
+  ['Name','Age','Exp','Strength','Weak','Story'].forEach(s=>{
+    document.getElementById((p==='A'?'a':'b')+s).addEventListener('input',()=>{updateCandidate(p);save()});
+  });
+}
+bindCandidate('A');bindCandidate('B');
+function updateCandidate(p){
+  const q=p==='A'?'a':'b';
+  document.getElementById(q+'CardName').textContent=v(q+'Name')||`Candidato ${p}`;
+  document.getElementById(q+'CardMeta').textContent=[v(q+'Age')?v(q+'Age')+' años':'',v(q+'Exp')].filter(Boolean).join(' · ')||'Edad · Experiencia';
+  document.getElementById(q+'CardStrength').textContent=v(q+'Strength')||'—';
+  document.getElementById(q+'CardWeak').textContent=v(q+'Weak')||'—';
+  document.getElementById(q+'CardStory').textContent=v(q+'Story')||'Aquí aparecerá su historia de vida.';
+  document.getElementById(q+'Count').textContent=(v(q+'Story').length||0)+'/500';
+}
+
+document.querySelectorAll('.skill').forEach(b=>b.addEventListener('click',()=>{const s=b.dataset.skill;b.classList.toggle('selected');selectedSkills=b.classList.contains('selected')?[...new Set([...selectedSkills,s])]:selectedSkills.filter(x=>x!==s);updateChallenge();save()}));
+['challengeName','challengeTask'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{updateChallenge();save()}));
+function updateChallenge(){document.getElementById('challengePrevName').textContent=v('challengeName')||'Véndeme este producto';document.getElementById('challengePrevTask').textContent=v('challengeTask')||'Ambos candidatos deberán realizar la misma prueba.';document.getElementById('challengePrevSkills').innerHTML=(selectedSkills.length?selectedSkills:['Comunicación','Seguridad']).map(x=>`<span class="skill selected">${esc(x)}</span>`).join('')}
+
+function renderRatings(){['A','B'].forEach(p=>{const box=document.getElementById('rating'+p);box.innerHTML='';ratingLabels.forEach((label,i)=>{const row=document.createElement('div');row.className='ratingRow';const name=document.createElement('b');name.textContent=label;const stars=document.createElement('div');stars.className='stars';for(let n=1;n<=5;n++){const s=document.createElement('button');s.type='button';s.className='star'+(ratings[p][i]>=n?' on':'');s.textContent='★';s.addEventListener('click',()=>{ratings[p][i]=n;renderRatings();save()});stars.appendChild(s)}row.append(name,stars);box.appendChild(row)});const score=ratings[p].reduce((a,b)=>a+b,0);document.getElementById('score'+p).textContent=score;document.getElementById('scoreFill'+p).style.width=(score/20*100)+'%'});syncFight()}
+renderRatings();
+
+document.querySelectorAll('.hireBtn').forEach(b=>b.addEventListener('click',()=>{document.getElementById('hired').value=b.dataset.hire;document.getElementById('choiceA').classList.toggle('selected',b.dataset.hire==='A');document.getElementById('choiceB').classList.toggle('selected',b.dataset.hire==='B');toast('✅ Candidato seleccionado');save()}));
+document.getElementById('showFinal').addEventListener('click',()=>{if(validate(7)){buildFinalPrompt();go(8)}});
+document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('¿Deseas borrar todo y comenzar una nueva simulación?')){localStorage.removeItem('salesSimV2');location.reload()}});
+
+document.getElementById('copyPromptBtn').addEventListener('click',async()=>{
+  const area=document.getElementById('finalPrompt');
+  try{
+    await navigator.clipboard.writeText(area.value);
+    toast('✅ Prompt copiado.');
+  }catch(e){
+    area.focus(); area.select(); document.execCommand('copy');
+    toast('✅ Prompt copiado.');
+  }
+});
+
+document.getElementById('downloadPromptBtn').addEventListener('click',()=>{
+  const blob=new Blob([document.getElementById('finalPrompt').value],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='Prompt_Presentacion_Sales_Management.txt';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+});
+
+document.getElementById('pdfBtn').addEventListener('click', async ()=>{
+  const btn=document.getElementById('pdfBtn');
+  const original=btn.textContent;
+  try{
+    if(typeof html2canvas==='undefined' || !window.jspdf){
+      toast('No se pudieron cargar las herramientas PDF. Verifica tu conexión a internet.');
+      return;
+    }
+    btn.disabled=true;
+    btn.textContent='Generando PDF…';
+
+    const { jsPDF } = window.jspdf;
+    // Página personalizada 16:9 para que no existan márgenes blancos ni recortes.
+    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[1280,720],hotfixes:['px_scaling']});
+    const pages=['finalStory1','finalStory2'];
+
+    for(let i=0;i<pages.length;i++){
+      const node=document.getElementById(pages[i]);
+      const canvas=await html2canvas(node,{
+        scale:2,
+        useCORS:true,
+        backgroundColor:'#f7f9fc',
+        logging:false,
+        width:node.scrollWidth,
+        height:node.scrollHeight
+      });
+
+      const img=canvas.toDataURL('image/jpeg',0.96);
+      if(i>0) pdf.addPage([1280,720],'landscape');
+      pdf.addImage(img,'JPEG',0,0,1280,720,undefined,'FAST');
+    }
+
+    const name=(v('team')||'Equipo').replace(/[^\w\-]+/g,'_');
+    pdf.save('Sales_Management_Storytelling_'+name+'.pdf');
+    toast('✅ PDF generado en 2 páginas.');
+  }catch(err){
+    console.error(err);
+    toast('No se pudo generar el PDF. Intenta nuevamente.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent=original;
+  }
+});
+
+document.getElementById('pngBtn1').addEventListener('click',()=>downloadStoryPNG('finalStory1','Sales_Management_Storytelling_Pagina_1.png'));
+document.getElementById('pngBtn2').addEventListener('click',()=>downloadStoryPNG('finalStory2','Sales_Management_Storytelling_Pagina_2.png'));
+async function downloadStoryPNG(nodeId,fileName){
+  const node=document.getElementById(nodeId);
+  try{
+    const xml=new XMLSerializer().serializeToString(node.cloneNode(true));
+    const styles=[...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');
+    const w=1600,h=900;
+    const data=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${styles}</style><div style="width:${w}px;height:${h}px">${node.outerHTML}</div></div></foreignObject></svg>`;
+    const blob=new Blob([data],{type:'image/svg+xml;charset=utf-8'});
+    const url=URL.createObjectURL(blob);const img=new Image();
+    img.onload=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fileName;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)},'image/png')};
+    img.onerror=()=>toast('No se pudo generar PNG. Usa Guardar PDF / Imprimir.');
+    img.src=url;
+  }catch(e){toast('No se pudo generar PNG. Usa Guardar PDF / Imprimir.')}
+}
+
+function validate(i){hideErrors();
+ if(i===0&&(!v('team')||!v('members'))){return err('Completen el nombre del equipo y los integrantes.')}
+ if(i===1&&(!v('businessType')||!v('company')||!v('sellerType'))){show('businessError');return false}
+ if(i===2&&(!v('jobTitle')||[v('r1'),v('r2'),v('r3'),v('r4')].filter(Boolean).length<2)){show('vacancyError');return false}
+ if(i===3&&(!v('aName')||!v('aExp')||v('aStory').length<25)){show('aError');return false}
+ if(i===4&&(!v('bName')||!v('bExp')||v('bStory').length<25)){show('bError');return false}
+ if(i===5&&(!v('challengeName')||!v('challengeTask')||selectedSkills.length<2)){show('challengeError');return false}
+ if(i===7&&(!v('hired')||!v('hireReason')||!v('evidence'))){show('decisionError');return false}
+ return true
+}
+function err(t){toast(t);return false}
+function show(id){document.getElementById(id).classList.add('show')}
+function hideErrors(){document.querySelectorAll('.error').forEach(x=>x.classList.remove('show'))}
+function v(id){return (document.getElementById(id)?.value||'').trim()}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>x.classList.remove('show'),1800)}
+
+function syncFight(){
+  document.getElementById('aFightName').textContent=v('aName')||'Candidato A';
+  document.getElementById('bFightName').textContent=v('bName')||'Candidato B';
+  document.getElementById('aChoiceName').textContent=v('aName')||'Candidato A';
+  document.getElementById('bChoiceName').textContent=v('bName')||'Candidato B';
+  document.getElementById('aChoiceScore').textContent=ratings.A.reduce((a,b)=>a+b,0)+'/20';
+  document.getElementById('bChoiceScore').textContent=ratings.B.reduce((a,b)=>a+b,0)+'/20';
+}
+function syncAll(){updateVacancy();updateCandidate('A');updateCandidate('B');updateChallenge();syncFight();if(current===8)buildFinalPrompt()}
+function buildFinalPrompt(){
+ const scoreA=ratings.A.reduce((a,b)=>a+b,0);
+ const scoreB=ratings.B.reduce((a,b)=>a+b,0);
+ const hire=v('hired')||'A';
+ const q=hire==='A'?'a':'b';
+ const reqs=[v('r1'),v('r2'),v('r3'),v('r4')].filter(Boolean);
+ const criteriaA=ratingLabels.map((x,i)=>`${x.replace(/^..?\s/,'')}: ${ratings.A[i]}/5`).join('\n');
+ const criteriaB=ratingLabels.map((x,i)=>`${x.replace(/^..?\s/,'')}: ${ratings.B[i]}/5`).join('\n');
+
+ const prompt=`CREA UNA PRESENTACIÓN UNIVERSITARIA VISUAL Y PROFESIONAL EN FORMATO HORIZONTAL 16:9.
+
+TEMA:
+SALES MANAGEMENT – CONTRATA AL MEJOR VENDEDOR
+
+OBJETIVO:
+Transformar las respuestas del equipo en una presentación tipo storytelling sobre un proceso de selección de vendedores.
+
+REGLA OBLIGATORIA:
+NO CAMBIES NINGÚN DATO ESCRITO POR LOS ESTUDIANTES.
+NO CORRIJAS ORTOGRAFÍA, NOMBRES, EDADES, HISTORIAS, FORTALEZAS, DEBILIDADES, RESULTADOS, OBSERVACIONES NI LA DECISIÓN FINAL.
+NO RESUMAS INFORMACIÓN DE FORMA QUE CAMBIE SU SENTIDO.
+NO INVENTES DATOS FALTANTES.
+SI ALGO ESTÁ ESCRITO DE FORMA EXTRAÑA, DÉJALO EXACTAMENTE IGUAL.
+SOLO PUEDES MEJORAR EL DISEÑO, LA JERARQUÍA VISUAL Y LA DISTRIBUCIÓN DE LA INFORMACIÓN.
+
+ESTILO:
+- Moderno, colorido, juvenil y profesional.
+- Storytelling empresarial.
+- Diseño coherente en todas las diapositivas.
+- Usar tarjetas, iconos, barras de puntuación, comparaciones y elementos visuales.
+- No usar fotografías reales de candidatos porque no se proporcionaron imágenes.
+- Puedes usar avatares genéricos, siluetas o iconos.
+- Evitar diapositivas llenas de texto.
+- Distribuir la información en suficientes diapositivas para que sea fácil de exponer.
+- Mantener absolutamente todos los datos.
+- Presentación pensada para una exposición aproximada de 3 minutos.
+
+ESTRUCTURA RECOMENDADA:
+1. Portada: empresa, equipo, grupo e integrantes.
+2. La empresa y la necesidad de contratación.
+3. La vacante y sus requisitos.
+4. Candidato A: perfil e historia de vida.
+5. Candidato B: perfil e historia de vida.
+6. La prueba de selección.
+7. Candidato A VS Candidato B con resultados visuales.
+8. Hallazgos y observaciones del equipo.
+9. Decisión final: candidato contratado, evidencia y razón.
+
+DATOS EXACTOS DEL EQUIPO
+
+EQUIPO
+Nombre del equipo: ${v('team')}
+Grupo: ${v('group')}
+Integrantes: ${v('members')}
+
+EMPRESA
+Tipo de negocio: ${v('businessType')}
+Nombre de la empresa: ${v('company')}
+Tipo de vendedor requerido: ${v('sellerType')}
+
+VACANTE
+Nombre del puesto: ${v('jobTitle')}
+Descripción: ${v('jobDesc')}
+Requisitos:
+${reqs.map((x,i)=>`${i+1}. ${x}`).join('\n')}
+
+CANDIDATO A
+Nombre: ${v('aName')}
+Edad: ${v('aAge')}
+Experiencia: ${v('aExp')}
+Fortaleza: ${v('aStrength')}
+Debilidad: ${v('aWeak')}
+Historia de vida:
+${v('aStory')}
+
+CANDIDATO B
+Nombre: ${v('bName')}
+Edad: ${v('bAge')}
+Experiencia: ${v('bExp')}
+Fortaleza: ${v('bStrength')}
+Debilidad: ${v('bWeak')}
+Historia de vida:
+${v('bStory')}
+
+PRUEBA DE SELECCIÓN
+Nombre del reto: ${v('challengeName')}
+¿Qué tendrán que hacer?: ${v('challengeTask')}
+¿Qué querían comprobar?: ${selectedSkills.join(', ')}
+
+RESULTADOS DEL CANDIDATO A
+${criteriaA}
+TOTAL: ${scoreA}/20
+
+RESULTADOS DEL CANDIDATO B
+${criteriaB}
+TOTAL: ${scoreB}/20
+
+OBSERVACIÓN DEL EQUIPO DURANTE LA PRUEBA
+${v('observations')}
+
+DECISIÓN FINAL
+Candidato contratado: ${v(q+'Name')}
+Evidencia más importante: ${v('evidence')}
+Razón de contratación:
+${v('hireReason')}
+
+CIERRE OBLIGATORIO:
+Termina con una diapositiva visual donde se vea claramente el candidato contratado y la razón dada por el equipo.
+
+RECUERDA:
+NO CAMBIES NADA DE LA INFORMACIÓN.
+NO CORRIJAS NADA.
+NO INVENTES NADA.
+TU TRABAJO ES ÚNICAMENTE CONVERTIR ESTOS DATOS EN UNA PRESENTACIÓN VISUALMENTE ATRACTIVA Y FÁCIL DE EXPONER.`;
+
+ document.getElementById('finalPrompt').value=prompt;
+}
+document.querySelectorAll('input,textarea,select').forEach(el=>el.addEventListener('input',save));
+function save(){clearTimeout(window._save);window._save=setTimeout(()=>{const ids=['team','group','members','businessType','company','sellerType','jobTitle','jobDesc','r1','r2','r3','r4','aName','aAge','aExp','aStrength','aWeak','aStory','bName','bAge','bExp','bStrength','bWeak','bStory','challengeName','challengeTask','observations','hired','hireReason','evidence'];const data={};ids.forEach(id=>data[id]=document.getElementById(id)?.value||'');data.selectedSkills=selectedSkills;data.ratings=ratings;data.current=current;localStorage.setItem('salesSimV2',JSON.stringify(data));toast('Tu avance ha sido guardado.')},500)}
+function load(){try{const data=JSON.parse(localStorage.getItem('salesSimV2')||'null');if(!data)return;Object.entries(data).forEach(([k,val])=>{const el=document.getElementById(k);if(el&&typeof val==='string')el.value=val});selectedSkills=data.selectedSkills||[];ratings=data.ratings||ratings;document.querySelectorAll('.skill').forEach(b=>b.classList.toggle('selected',selectedSkills.includes(b.dataset.skill)));if(v('businessType'))document.querySelectorAll('#businessGrid .optionCard').forEach(b=>b.classList.toggle('selected',b.dataset.value===v('businessType')));renderRatings();syncAll();go(Number.isInteger(data.current)?Math.min(data.current,8):0)}catch(e){}}
+load();
+</script>
+</body>
+</html>
